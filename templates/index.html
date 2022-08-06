@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        input[type=text],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        label {
+            font-size: 20px;
+            padding: 12px 12px 12px 0;
+            display: inline-block;
+        }
+
+        input[type=button],
+        input[type=submit] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+
+        input[type=button]:hover,
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        .col-25 {
+            float: left;
+            width: 25%;
+            margin-top: 6px;
+        }
+
+        .col-75 {
+            float: left;
+            width: 75%;
+            margin-top: 6px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+        @media screen and (max-width: 600px) {
+
+            .col-25,
+            .col-75,
+            input[type=button],
+            input[type=submit] {
+                width: 100%;
+                margin-top: 0;
+            }
+        }
+    </style>
+
+    <style>
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+    </style>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <script>
+        $(function () {
+            $("#enviarImagenForm").on("submit", function (e) {
+                e.preventDefault();
+                var f = $(this);
+                var formData = new FormData(document.getElementById("enviarImagenForm"));
+
+                $.ajax({
+                    url: "/enviarImagen",
+                    type: "post",
+                    dataType: "html",
+                    data: formData,
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                })
+                    .done(function (res) {
+                        alert('Imagen enviada correctamente!');
+                    });
+            });
+        });
+    </script>
+
+
+
+    <title>Proyecto TEO</title>
+</head>
+
+<body>
+
+    <h1>Aprendizaje automático</h1>
+
+    <div class="container">
+
+
+        <br>
+        <div class="row">
+            <input id="btnObtenerModelos" type="button" value="Obtener Modelos" onclick="obtenerModelos()">
+        </div>
+
+
+    </div>
+
+
+    <div class="container">
+
+        <form enctype="multipart/form-data" id="enviarImagenForm" name="enviarImagenForm" method="post">
+
+            <div class="row">
+                <h1>Seleccione un conjunto de escudos</h1>
+                <input type="file" id="archivo1" name="archivo1" multiple><br><br>
+            </div>
+
+            <div class="row">
+                <input type="submit" value="Enviar imagen">
+            </div>
+
+        </form>
+
+        <br>
+        <div class="row">
+            <input id="btnEliminarImagenes" type="button" value="Eliminar imágenes" onclick="eliminarImagenes()">
+        </div>
+
+        <br>
+        <div class="row">
+            <input id="btnAnalizar" type="button" value="Iniciar análisis" onclick="analizar()">
+        </div>
+
+
+    </div>
+
+
+    <div style="overflow-x:auto;">
+        <table id="tablaResultados1">
+            <tr>
+                <th colspan="5" style="font-size: 25px;">Resultados</th>
+            </tr>
+            <tr>
+                <td>
+                    <img src="static/inicio.jpg" width="128" height="128">
+                </td>
+                <td>
+                    <img src="static/inicio.jpg" width="128" height="128">
+                </td>
+                <td>
+                    <img src="static/inicio.jpg" width="128" height="128">
+                </td>
+                <td>
+                    <img src="static/inicio.jpg" width="128" height="128">
+                </td>
+                <td>
+                    <img src="static/inicio.jpg" width="128" height="128">
+                </td>
+
+            </tr>
+
+        </table>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <div style="overflow-x:auto;">
+        <table id="tablaResultados2">
+            <tr>
+                <th colspan="2" style="font-size: 25px;">Resultados</th>
+            </tr>
+            <tr>
+                <th>Institución</th>
+                <th>Exactitud</th>
+            </tr>
+            <tr>
+                <td>USAC</td>
+                <td id="cusac">1</td>
+            </tr>
+            <tr>
+                <td>Landivar</td>
+                <td id="clandivar">1</td>
+            </tr>
+            <tr>
+                <td>Mariano</td>
+                <td id="cmariano">1</td>
+            </tr>
+            <tr>
+                <td>Marroquin</td>
+                <td id="cmarroquin">1</td>
+            </tr>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+
+        function analizar() {
+            //obtener los datos de las cajas de texto
+            //var parametro1 = $('#frecuencia').val();
+            //var parametro2 = $('#tipoFiltro').val();
+            //console.log(parametro1);
+            //console.log(parametro2);
+
+            //llamada ajax          
+            /*Para conformar data es {nomVariable1: contenidoVariable1, nomVariable2: contenidoVariable2}*/
+
+            $.ajax({
+
+                //data: { frecuencia: parametro1, tipoFiltro: parametro2 },
+                url: "/analizar", //url de donde obtener los datos
+                dataType: 'json', //tipo de datos retornados
+                type: 'post' //enviar variables como post
+
+            }).done(function (json) {
+                //console.log(json);
+
+                //Voy a reemplazar el html de la tabla tablaResultados1
+                var cadena = "<tr>" +
+                    "<th colspan=\"5\" style=\"font-size: 25px;\">Resultados</th>" +
+                    "</tr>";
+
+                //Obtengo el arreglo con la información de la tabla 1
+                var arreglo_resultados1 = json['resultados1'];
+
+                cadena += "<tr>" //Inicio de la fila
+                console.log(arreglo_resultados1.length)
+                //for (elemento in arreglo_resultados1) {
+                for (var i = 0; i < arreglo_resultados1.length; i++) {
+                    cadena +=
+                        "<td>"
+                        + "<img src=\"" + arreglo_resultados1[i]['imagen'] + "\" width=\"128\" height=\"128\"" + ">"
+                        + "<h3>" + arreglo_resultados1[i].institucion + "</h3>"
+                        + "</td>"
+                }
+
+                cadena += "</tr>"; //Fin de la fila
+
+                $("#tablaResultados1").html(cadena);
+
+
+
+
+                //Voy a reemplazar el html de la tabla tablaResultados2
+                //Obtengo el arreglo con la información de la tabla 1
+                var arreglo_resultados2 = json['resultados2'];
+
+                $("#cusac").html(arreglo_resultados2[0]['usac'] + "%");
+                $("#clandivar").html(arreglo_resultados2[1]['landivar'] + "%");
+                $("#cmariano").html(arreglo_resultados2[2]['mariano'] + "%");
+                $("#cmarroquin").html(arreglo_resultados2[3]['marroquin'] + "%");
+                
+
+
+                alert('Análisis generado correctamente!');
+            });
+        }
+
+
+
+
+
+
+
+        function eliminarImagenes() {
+
+            $.ajax({
+
+                url: "/eliminarImagenes", //url de donde obtener los datos
+                dataType: 'json', //tipo de datos retornados
+                type: 'post' //enviar variables como post
+
+            }).done(function (json) {
+                alert('Registro de imágenes vaciado correctamente!');
+            });
+        }
+
+        function obtenerModelos() {
+
+            $.ajax({
+
+                url: "/obtenerModelos", //url de donde obtener los datos
+                dataType: 'json', //tipo de datos retornados
+                type: 'post' //enviar variables como post
+
+            }).done(function (json) {
+                alert('Modelos cargados correctamente!');
+            });
+        }
+
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
